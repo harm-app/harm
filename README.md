@@ -1,38 +1,38 @@
 # HARM
 
-**Home Assistant Remote Media** transforma um tablet Android antigo em uma tela de mídia local controlada pelo Home Assistant.
+**Home Assistant Remote Media** turns an older Android tablet into a local media display controlled by Home Assistant.
 
-## Comportamento
+## Features
 
-- Tela preta/neutra enquanto está ocioso
-- Reprodução RTSP nativa via LibVLC/TCP das câmeras Intelbras, sem abrir a interface do HA
-- Reconexão automática quando o stream deixa de avançar
-- Reprodução de mídia por URL HTTP, HTTPS ou RTSP
-- Login no NVR e seleção automática das câmeras encontradas
-- Pré-visualização manual das câmeras selecionadas
-- Acordar, ajustar brilho, parar a mídia e apagar a tela remotamente
-- Inicialização automática após reiniciar o tablet
-- API HTTP local protegida por token
+- Black, neutral screen while idle
+- Native Intelbras camera RTSP playback through LibVLC over TCP, without displaying the Home Assistant UI
+- Automatic reconnection when a stream stops progressing
+- Media playback from HTTP, HTTPS, or RTSP URLs
+- NVR login and automatic discovery of available cameras
+- Manual preview of selected cameras
+- Remote wake, brightness control, playback stop, and screen-off commands
+- Automatic startup after the tablet reboots
+- Token-protected local HTTP API
 
-Compatível com Android 6.0 ou superior. Testado no Galaxy Tab A SM-P555M com Android 7.1.1.
+Compatible with Android 6.0 or newer. Initially tested on a Galaxy Tab A SM-P555M running Android 7.1.1.
 
-## API local
+## Local API
 
-O endereço segue o formato `http://IP_DO_TABLET:8765`. O token fica na configuração local do aplicativo.
+The endpoint follows the format `http://TABLET_IP:8765`. The control token is shown only in the app's local settings.
 
 ```text
 GET /status?token=TOKEN
 GET /camera?token=TOKEN&channel=1&timeout=30
-GET /media?token=TOKEN&url=URL_CODIFICADA&timeout=30
+GET /media?token=TOKEN&url=ENCODED_URL&timeout=30
 GET /stop?token=TOKEN
 GET /wake?token=TOKEN
 GET /brightness?token=TOKEN&value=180
 GET /screen/off?token=TOKEN
 ```
 
-`timeout=0` mantém a mídia aberta até receber `/stop` ou `/screen/off`. Valores maiores encerram automaticamente após o número de segundos informado.
+`timeout=0` keeps the media open until `/stop` or `/screen/off` is received. A positive value stops playback automatically after that number of seconds.
 
-## Serviços no Home Assistant
+## Home Assistant services
 
 - `rest_command.harm_camera`
 - `rest_command.harm_media`
@@ -41,7 +41,7 @@ GET /screen/off?token=TOKEN
 - `rest_command.harm_brightness`
 - `rest_command.harm_screen_off`
 
-Exemplo de ação em uma automação:
+Example automation action:
 
 ```yaml
 action: rest_command.harm_camera
@@ -50,10 +50,10 @@ data:
   timeout: 30
 ```
 
-## Compilar
+## Build
 
 ```bash
 ./gradlew assembleDebug
 ```
 
-APK: `app/build/outputs/apk/debug/HARM-0.4.3-debug.apk`
+APK: `app/build/outputs/apk/debug/HARM-0.4.4-debug.apk`

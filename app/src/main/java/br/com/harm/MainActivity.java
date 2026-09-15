@@ -133,7 +133,7 @@ public class MainActivity extends Activity {
         String host = prefs.getString(KEY_NVR_HOST, "");
         String user = prefs.getString(KEY_NVR_USER, "");
         String password = prefs.getString(KEY_NVR_PASSWORD, "");
-        if (host.isEmpty() || user.isEmpty()) { Toast.makeText(this, "Configure o NVR", Toast.LENGTH_LONG).show(); showSettings(true); return; }
+        if (host.isEmpty() || user.isEmpty()) { Toast.makeText(this, "Configure the NVR", Toast.LENGTH_LONG).show(); showSettings(true); return; }
         showIdle(); idleView.setVisibility(View.GONE);
         String stream = "rtsp://" + Uri.encode(user) + ":" + Uri.encode(password) + "@" + host
                 + ":554/cam/realmonitor?channel=" + channel + "&subtype=0";
@@ -185,7 +185,7 @@ public class MainActivity extends Activity {
     private void restartStream() {
         if (currentMediaUrl == null) return;
         String url = currentMediaUrl;
-        Log.w("HARM", "Stream sem progresso; reconectando");
+        Log.w("HARM", "Stream stalled; reconnecting");
         stopVlc(); lastProgressAt = SystemClock.elapsedRealtime(); startVlc(url);
     }
 
@@ -195,41 +195,41 @@ public class MainActivity extends Activity {
 
     private void showSettings(boolean cancelable) {
         LinearLayout box = new LinearLayout(this); box.setOrientation(LinearLayout.VERTICAL); box.setPadding(28, 20, 28, 8);
-        EditText host = field("IP do NVR", prefs.getString(KEY_NVR_HOST, ""));
-        EditText user = field("Usuário do NVR", prefs.getString(KEY_NVR_USER, "admin"));
-        EditText password = field("Senha do NVR", prefs.getString(KEY_NVR_PASSWORD, ""));
+        EditText host = field("NVR IP address", prefs.getString(KEY_NVR_HOST, ""));
+        EditText user = field("NVR username", prefs.getString(KEY_NVR_USER, "admin"));
+        EditText password = field("NVR password", prefs.getString(KEY_NVR_PASSWORD, ""));
         password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         box.addView(host); box.addView(user); box.addView(password);
-        Button connect = new Button(this); connect.setText("Conectar e selecionar câmeras"); box.addView(connect);
+        Button connect = new Button(this); connect.setText("Connect and select cameras"); box.addView(connect);
         TextView selected = new TextView(this); selected.setPadding(0, 8, 0, 4);
         selected.setText(selectionSummary()); box.addView(selected);
-        Button preview = new Button(this); preview.setText("Visualizar câmera"); box.addView(preview);
+        Button preview = new Button(this); preview.setText("Preview camera"); box.addView(preview);
         TextView api = new TextView(this);
-        api.setText("Controle local: porta " + API_PORT + "\nToken: " + prefs.getString(KEY_TOKEN, ""));
+        api.setText("Local control port: " + API_PORT + "\nToken: " + prefs.getString(KEY_TOKEN, ""));
         api.setTextIsSelectable(true); api.setPadding(0, 18, 0, 12); box.addView(api);
-        Button admin = new Button(this); admin.setText("Permitir apagar a tela");
+        Button admin = new Button(this); admin.setText("Allow screen power off");
         admin.setOnClickListener(v -> requestAdmin()); box.addView(admin);
-        Button brightness = new Button(this); brightness.setText("Permitir controlar o brilho");
+        Button brightness = new Button(this); brightness.setText("Allow brightness control");
         brightness.setOnClickListener(v -> startActivity(new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS,
                 Uri.parse("package:" + getPackageName())))); box.addView(brightness);
         connect.setOnClickListener(v -> {
-            connect.setEnabled(false); connect.setText("Conectando...");
+            connect.setEnabled(false); connect.setText("Connecting...");
             String h = host.getText().toString().trim(), u = user.getText().toString().trim(), p = password.getText().toString();
             new Thread(() -> {
                 try {
                     List<String> names = NvrClient.channelNames(h, u, p);
                     runOnUiThread(() -> chooseCameras(names, h, u, p, selected, connect));
                 } catch (Exception error) {
-                    runOnUiThread(() -> { connect.setEnabled(true); connect.setText("Conectar e selecionar câmeras");
+                    runOnUiThread(() -> { connect.setEnabled(true); connect.setText("Connect and select cameras");
                         Toast.makeText(this, error.getMessage(), Toast.LENGTH_LONG).show(); });
                 }
             }).start();
         });
         AlertDialog dialog = new AlertDialog.Builder(this).setTitle("HARM").setView(box)
-                .setCancelable(cancelable).setNegativeButton(cancelable ? "Cancelar" : null, null)
-                .setPositiveButton("Salvar", null).create();
+                .setCancelable(cancelable).setNegativeButton(cancelable ? "Cancel" : null, null)
+                .setPositiveButton("Save", null).create();
         dialog.setOnShowListener(v -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(x -> {
-            if (host.getText().toString().trim().isEmpty()) { host.setError("Informe o IP"); return; }
+            if (host.getText().toString().trim().isEmpty()) { host.setError("Enter an IP address"); return; }
             prefs.edit().putString(KEY_NVR_HOST, host.getText().toString().trim())
                     .putString(KEY_NVR_USER, user.getText().toString().trim())
                     .putString(KEY_NVR_PASSWORD, password.getText().toString()).apply();
@@ -240,7 +240,7 @@ public class MainActivity extends Activity {
 
     private String selectionSummary() {
         String cameras = prefs.getString(KEY_CAMERAS, "");
-        return cameras.isEmpty() ? "Nenhuma câmera selecionada" : "Câmeras selecionadas: " + cameras;
+        return cameras.isEmpty() ? "No cameras selected" : "Selected cameras: " + cameras;
     }
 
     private void chooseCameras(List<String> names, String host, String user, String password,
@@ -248,9 +248,9 @@ public class MainActivity extends Activity {
         CharSequence[] labels = new CharSequence[names.size()]; boolean[] checked = new boolean[names.size()];
         String old = "," + prefs.getString(KEY_CAMERAS, "") + ",";
         for (int i = 0; i < names.size(); i++) { labels[i] = (i + 1) + " — " + names.get(i); checked[i] = old.equals(",,") || old.contains("," + (i + 1) + ","); }
-        new AlertDialog.Builder(this).setTitle("Selecione as câmeras").setMultiChoiceItems(labels, checked, (d, which, value) -> checked[which] = value)
-                .setNegativeButton("Cancelar", (d, w) -> { connect.setEnabled(true); connect.setText("Conectar e selecionar câmeras"); })
-                .setPositiveButton("Salvar", (d, w) -> {
+        new AlertDialog.Builder(this).setTitle("Select cameras").setMultiChoiceItems(labels, checked, (d, which, value) -> checked[which] = value)
+                .setNegativeButton("Cancel", (d, w) -> { connect.setEnabled(true); connect.setText("Connect and select cameras"); })
+                .setPositiveButton("Save", (d, w) -> {
                     StringBuilder channels = new StringBuilder(), savedNames = new StringBuilder();
                     for (int i = 0; i < checked.length; i++) if (checked[i]) {
                         if (channels.length() > 0) { channels.append(','); savedNames.append('|'); }
@@ -258,32 +258,32 @@ public class MainActivity extends Activity {
                     }
                     prefs.edit().putString(KEY_NVR_HOST, host).putString(KEY_NVR_USER, user).putString(KEY_NVR_PASSWORD, password)
                             .putString(KEY_CAMERAS, channels.toString()).putString(KEY_CAMERA_NAMES, savedNames.toString()).apply();
-                    selected.setText(selectionSummary()); connect.setEnabled(true); connect.setText("Conectar e selecionar câmeras");
+                    selected.setText(selectionSummary()); connect.setEnabled(true); connect.setText("Connect and select cameras");
                 }).show();
     }
 
     private void previewCamera(AlertDialog settingsDialog, EditText host, EditText user, EditText password) {
         String channelsValue = prefs.getString(KEY_CAMERAS, "");
-        if (channelsValue.isEmpty()) { Toast.makeText(this, "Selecione ao menos uma câmera", Toast.LENGTH_LONG).show(); return; }
+        if (channelsValue.isEmpty()) { Toast.makeText(this, "Select at least one camera", Toast.LENGTH_LONG).show(); return; }
         String[] channels = channelsValue.split(",");
         String[] savedNames = prefs.getString(KEY_CAMERA_NAMES, "").split("\\|", -1);
         CharSequence[] labels = new CharSequence[channels.length];
         for (int i = 0; i < channels.length; i++) {
-            String name = i < savedNames.length && !savedNames[i].isEmpty() ? savedNames[i] : "Canal " + channels[i];
+            String name = i < savedNames.length && !savedNames[i].isEmpty() ? savedNames[i] : "Channel " + channels[i];
             labels[i] = channels[i] + " — " + name;
         }
-        new AlertDialog.Builder(this).setTitle("Visualizar câmera").setItems(labels, (d, which) -> {
+        new AlertDialog.Builder(this).setTitle("Preview camera").setItems(labels, (d, which) -> {
             prefs.edit().putString(KEY_NVR_HOST, host.getText().toString().trim())
                     .putString(KEY_NVR_USER, user.getText().toString().trim())
                     .putString(KEY_NVR_PASSWORD, password.getText().toString()).apply();
             settingsDialog.dismiss(); playCamera(Integer.parseInt(channels[which]), 0);
-        }).setNegativeButton("Cancelar", null).show();
+        }).setNegativeButton("Cancel", null).show();
     }
 
     private void requestAdmin() {
         Intent i = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
         i.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, new ComponentName(this, AdminReceiver.class));
-        i.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Permite que o Home Assistant apague a tela."); startActivity(i);
+        i.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Allows Home Assistant to turn off the screen."); startActivity(i);
     }
 
     @Override public void onBackPressed() { showSettings(true); }

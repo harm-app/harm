@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">HARM</string>
-    <string name="device_admin_description">Permite que o HARM apague e bloqueie a tela por automação local.</string>
+    <string name="device_admin_description">Allows HARM to turn off and lock the screen through local automation.</string>
 </resources>

@@ -1,1 +1,1 @@
-# Remote HA: sem regras adicionais nesta versão.
+# HARM: no additional ProGuard rules are required for this version.

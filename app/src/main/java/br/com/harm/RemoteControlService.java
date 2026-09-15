@@ -32,7 +32,7 @@ public class RemoteControlService extends Service {
             SharedPreferences prefs = getSharedPreferences(MainActivity.PREFS, MODE_PRIVATE);
             if (!prefs.getString(MainActivity.KEY_TOKEN, "").equals(q.get("token"))) { reply(socket, 401, "{\"error\":\"unauthorized\"}"); return; }
             String path = requestParts[1].split("\\?", 2)[0];
-            if ("/status".equals(path)) reply(socket, 200, "{\"status\":\"ok\",\"version\":\"0.4.3\"}");
+            if ("/status".equals(path)) reply(socket, 200, "{\"status\":\"ok\",\"version\":\"0.4.4\"}");
             else if ("/camera".equals(path)) {
                 int channel = Math.max(1, Math.min(32, number(q.get("channel"), 1)));
                 int timeout = Math.max(0, number(q.get("timeout"), 0));

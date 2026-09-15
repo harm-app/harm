@@ -29,17 +29,17 @@ final class NvrClient {
         if (firstCode == 401 && challenge != null && challenge.toLowerCase().startsWith("digest"))
             connection.setRequestProperty("Authorization", digest(challenge, user, password, path));
         int code = connection.getResponseCode();
-        if (code != 200) throw new Exception("Autenticação recusada (HTTP " + code + ")");
+        if (code != 200) throw new Exception("Authentication rejected (HTTP " + code + ")");
         List<String> names = new ArrayList<>();
         BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
         Pattern linePattern = Pattern.compile("table\\.ChannelTitle\\[(\\d+)]\\.Name=(.*)");
         String line;
         while ((line = reader.readLine()) != null) {
             Matcher match = linePattern.matcher(line.trim());
-            if (match.matches()) names.add(match.group(2).isEmpty() ? "Canal " + (names.size() + 1) : match.group(2));
+            if (match.matches()) names.add(match.group(2).isEmpty() ? "Channel " + (names.size() + 1) : match.group(2));
         }
         reader.close(); connection.disconnect();
-        if (names.isEmpty()) throw new Exception("O NVR não informou nenhum canal");
+        if (names.isEmpty()) throw new Exception("The NVR did not report any channels");
         return names;
     }
 
