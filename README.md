@@ -18,6 +18,15 @@
 
 Compatible with Android 6.0 or newer. Initially tested on a Galaxy Tab A SM-P555M running Android 7.1.1.
 
+## Installation
+
+1. Download the APK from the [latest GitHub release](https://github.com/harm-app/harm/releases/latest).
+2. On the Android device, allow your browser or file manager to install unknown apps.
+3. Open the downloaded APK and complete the installation.
+4. Open HARM and configure the Home Assistant endpoint and camera source on the device.
+
+Keep HARM's control port available only on your trusted local network. Do not publish camera credentials, the device token, or port `8765` on the internet. See the [security policy](SECURITY.md) for details.
+
 ## Local API
 
 The endpoint follows the format `http://TABLET_IP:8765`. The control token is shown only in the app's local settings.
@@ -59,3 +68,7 @@ data:
 ```
 
 APK: `app/build/outputs/apk/debug/HARM-0.4.4-debug.apk`
+
+## License
+
+HARM is released under the [MIT License](LICENSE). LibVLC and other bundled dependencies remain subject to their respective licenses; see [third-party notices](THIRD_PARTY_NOTICES.md).
