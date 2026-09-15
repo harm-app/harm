@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="HARM turns an older Android tablet into a private, Home Assistant-controlled media display.">
+  <meta name="theme-color" content="#071319">
+  <title>HARM — Home Assistant Remote Media</title>
+  <link rel="icon" href="assets/harm-icon.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="nav shell">
+    <a class="brand" href="#top" aria-label="HARM home">
+      <img src="assets/harm-icon.png" alt="" width="38" height="38">
+      <span>HARM</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="#features">Features</a>
+      <a href="#workflow">How it works</a>
+      <a href="#integration">Integration</a>
+      <a href="#security">Security</a>
+    </nav>
+    <a class="nav-cta" href="https://github.com/lucaspiressimao/harm/releases/latest">Download</a>
+  </header>
+
+  <main id="top">
+    <section class="hero shell">
+      <div class="hero-copy">
+        <p class="eyebrow"><span></span> Local-first Android display</p>
+        <h1>Your cameras.<br><em>Right when needed.</em></h1>
+        <p class="lead">Turn an older Android tablet into a focused media screen that Home Assistant can wake, control, and switch off — entirely across your local network.</p>
+        <div class="actions">
+          <a class="button primary" href="https://github.com/lucaspiressimao/harm/releases/download/v0.4.4/HARM-0.4.4-debug.apk">Download v0.4.4</a>
+          <a class="button secondary" href="https://github.com/lucaspiressimao/harm">View source ↗</a>
+        </div>
+        <div class="facts" aria-label="Compatibility">
+          <span>Android 6+</span><span>ARMv7</span><span>Local HTTP API</span>
+        </div>
+      </div>
+
+      <div class="device-scene" aria-label="Illustration of HARM displaying a security camera">
+        <div class="signal signal-one"></div>
+        <div class="signal signal-two"></div>
+        <div class="tablet">
+          <div class="camera-feed">
+            <div class="feed-top"><span class="live-dot"></span> LIVE <b>CAM 01</b></div>
+            <div class="house"><i></i><i></i><i></i></div>
+            <div class="driveway"></div>
+            <div class="timestamp">20:14:37 · LOCAL</div>
+          </div>
+          <div class="camera-dot"></div>
+          <div class="home-key"></div>
+        </div>
+        <div class="event-card">
+          <span class="event-icon">⌁</span>
+          <div><strong>Motion detected</strong><small>Camera 1 · just now</small></div>
+          <span class="event-ok">✓</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="trust-strip">
+      <div class="shell trust-content">
+        <span>No cloud subscription</span><span>No Home Assistant dashboard UI</span><span>No internet required for local playback</span>
+      </div>
+    </section>
+
+    <section class="section shell" id="features">
+      <div class="section-heading">
+        <p class="eyebrow"><span></span> Purpose-built</p>
+        <h2>A display that stays out of the way.</h2>
+        <p>HARM does one job well: receive commands and show media without turning your wall tablet into another dashboard to maintain.</p>
+      </div>
+      <div class="feature-grid">
+        <article><div class="glyph">◉</div><h3>Native RTSP playback</h3><p>LibVLC over TCP handles Intelbras camera streams directly, without routing video through a browser.</p></article>
+        <article><div class="glyph">↻</div><h3>Automatic recovery</h3><p>A playback watchdog detects stalled streams and reconnects to the same camera automatically.</p></article>
+        <article><div class="glyph">☼</div><h3>Remote screen control</h3><p>Wake the display, adjust brightness, stop playback, or switch the screen off from an automation.</p></article>
+        <article><div class="glyph">⌂</div><h3>Home Assistant ready</h3><p>Simple REST commands make HARM usable from automations, scripts, scenes, and sensor events.</p></article>
+        <article><div class="glyph">⌕</div><h3>Camera discovery</h3><p>Connect to a compatible NVR, discover available channels, select cameras, and preview them locally.</p></article>
+        <article><div class="glyph">◇</div><h3>Idle by design</h3><p>When nothing needs attention, HARM presents a neutral black screen or powers the display off.</p></article>
+      </div>
+    </section>
+
+    <section class="section workflow" id="workflow">
+      <div class="shell">
+        <div class="section-heading compact">
+          <p class="eyebrow"><span></span> Event-driven</p>
+          <h2>From motion to visibility in one flow.</h2>
+        </div>
+        <ol class="steps">
+          <li><span>01</span><div><strong>A sensor changes state</strong><p>A camera or any Home Assistant entity detects an event.</p></div></li>
+          <li><span>02</span><div><strong>Home Assistant calls HARM</strong><p>The automation selects a channel and display duration.</p></div></li>
+          <li><span>03</span><div><strong>The tablet wakes and plays</strong><p>HARM connects directly to the local stream in full screen.</p></div></li>
+          <li><span>04</span><div><strong>The display returns to rest</strong><p>Playback stops and the screen can switch off automatically.</p></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section shell integration" id="integration">
+      <div class="code-copy">
+        <p class="eyebrow"><span></span> Straightforward automation</p>
+        <h2>Control it with familiar HA actions.</h2>
+        <p>Call one REST command with a channel and timeout. HARM handles waking, playback, and stream recovery on the tablet.</p>
+        <a href="https://github.com/lucaspiressimao/harm#local-api">Read the integration guide ↗</a>
+      </div>
+      <div class="code-window">
+        <div class="code-bar"><span></span><span></span><span></span><b>automation.yaml</b></div>
+        <pre><code><i># Show camera 1 for 30 seconds</i>
+action: rest_command.harm_camera
+data:
+  channel: <mark>1</mark>
+  timeout: <mark>30</mark>
+
+<i># Then turn the screen off</i>
+action: rest_command.harm_screen_off</code></pre>
+      </div>
+    </section>
+
+    <section class="section security" id="security">
+      <div class="shell security-card">
+        <img src="assets/harm-icon.png" alt="HARM icon" width="112" height="112">
+        <div>
+          <p class="eyebrow"><span></span> Private by default</p>
+          <h2>Designed for a trusted local network.</h2>
+          <p>Camera credentials stay on the tablet, Android backup is disabled, and the control API uses a device-generated token. Keep port 8765 inside your LAN and never expose it through your router.</p>
+          <a href="https://github.com/lucaspiressimao/harm/blob/main/SECURITY.md">Read the security policy ↗</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta shell">
+      <p class="eyebrow"><span></span> Give old hardware a focused job</p>
+      <h2>Make your tablet useful again.</h2>
+      <p>Download HARM, connect your NVR, and let Home Assistant decide when the screen should come alive.</p>
+      <div class="actions centered">
+        <a class="button primary" href="https://github.com/lucaspiressimao/harm/releases/download/v0.4.4/HARM-0.4.4-debug.apk">Download HARM</a>
+        <a class="button secondary" href="https://github.com/lucaspiressimao/harm/issues">Report an issue</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="shell">
+    <div class="brand"><img src="assets/harm-icon.png" alt="" width="30" height="30"><span>HARM</span></div>
+    <p>Home Assistant Remote Media · Open source on GitHub</p>
+    <a href="#top">Back to top ↑</a>
+  </footer>
+</body>
+</html>
