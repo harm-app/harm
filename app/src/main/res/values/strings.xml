@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">HARM</string>
+    <string name="device_admin_description">Permite que o HARM apague e bloqueie a tela por automação local.</string>
+</resources>
