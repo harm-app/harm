@@ -2,7 +2,7 @@
 
 **Home Assistant Remote Media** turns an older Android tablet into a local media display controlled by Home Assistant.
 
-[Website](https://harm-app.github.io/harm/) · [Download the latest APK](https://github.com/harm-app/harm/releases/latest)
+[Website](https://harm-app.github.io/) · [Download the latest APK](https://github.com/harm-app/harm/releases/latest)
 
 ## Features
 
